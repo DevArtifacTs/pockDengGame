@@ -32,10 +32,10 @@ function startGame(){
 		bet = getBet();
 		playerCards = deck.drawCard(2);
 		dealerCards = deck.drawCard(2);
-		// console.log("You got", playerCards.symbol + playerCards.value);
-		// console.log("The dealer got", dealerCards.symbol + dealerCards.value);
-		console.log("You got", playerCards);
-		console.log("The dealer got", dealerCards);
+		// console.log("You got", playerCards);
+		// console.log("The dealer got", dealerCards);
+		console.log("You got", cardDisplayer(playerCards));
+		console.log("The dealer got", cardDisplayer(dealerCards));
 		
         if (isRoundWinner(playerCards, dealerCards)) {
 			console.log(`You won!!!, received ${bet} chips`);
@@ -61,8 +61,6 @@ function getContinue(){
     let askingToContinue = true;
     while(askingToContinue){
         const userPrompt = prompt("Wanna play more (Yes/No)?");
-        // console.log("userPrompt= ", userPrompt);
-        // console.log("userPrompt.toLowerCase()= ", userPrompt.toLowerCase());
         if (userPrompt.toLowerCase() === "yes") {
             isContinue = true
             askingToContinue = false
@@ -76,20 +74,24 @@ function getContinue(){
     return isContinue;
 }
 
-function isRoundWinner(cardOneList, cardTwoList) {
-    let cardOneScore= 0; 
-    let cardTwoScore= 0;
-
-    cardOneList.forEach(card=> {
-        cardOneScore += CARD_VALUE_MAP[card.value];
-    })
-    cardTwoList.forEach((card) => {
-			cardTwoScore += CARD_VALUE_MAP[card.value];
+function getCardListTotalScore(cardList){
+    let cardScore= 0;
+    cardList.forEach((card) => {
+			cardScore += CARD_VALUE_MAP[card.value];
 		});
+    return cardScore;
+}
 
-    console.log("cardOneScore= ", cardOneScore);
-    console.log("cardTwoScore= ", cardTwoScore);
-
+function isRoundWinner(cardOneList, cardTwoList) {
+    let cardOneScore = getCardListTotalScore(cardOneList);
+    let cardTwoScore = getCardListTotalScore(cardTwoList);
+    // console.log("cardOneScore= ", cardOneScore);
+    // console.log("cardTwoScore= ", cardTwoScore);
 	return cardOneScore > cardTwoScore ;
+}
+
+function cardDisplayer(cardList){
+    const actualCard = cardList.map(card => card.symbol + card.value)
+    return actualCard;
 }
 
