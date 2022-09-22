@@ -5,33 +5,39 @@ const prompt = require("prompt-sync")({ sigint: true });
 let playerCards, dealerCards, bet
 let totalEarn = 0;
 let isGameStart = true;
+let isRemainCardIsAbleToPlay = true
 
 startGame()
 function startGame(){
-
     const deck = new Deck();
-    while (isGameStart) {
-        deck.shuffle();
-		bet = getBet();
-		playerCards = deck.drawCard(2);
-		dealerCards = deck.drawCard(2);
-		// console.log("You got", playerCards);
-		// console.log("The dealer got", dealerCards);
-		console.log("You got", cardDisplayer(playerCards));
-		console.log("The dealer got", cardDisplayer(dealerCards));
-		
-        if (isRoundWinner(playerCards, dealerCards)) {
-			console.log(`You won!!!, received ${bet} chips`);
-			totalEarn += bet;
-		} else if (isRoundWinner(dealerCards, playerCards)) {
-			totalEarn -= bet;
-			console.log(`You loose!!!, lost ${bet} chips`);
-		} else {
-			console.log(`tie!`);
+    while (isGameStart && isRemainCardIsAbleToPlay ) {
+
+            isRemainCardIsAbleToPlay = isPlayable(deck.getCardNumber());
+			// console.log("deck.length", deck.getCardNumber());
+			// console.log("isRemainCardIsAbleToPlay", isRemainCardIsAbleToPlay);
+			deck.shuffle();
+			bet = getBet();
+			playerCards = deck.drawCard(2);
+			dealerCards = deck.drawCard(2);
+			console.log("You got", cardDisplayer(playerCards));
+			console.log("The dealer got", cardDisplayer(dealerCards));
+
+			if (isRoundWinner(playerCards, dealerCards)) {
+				console.log(`You won!!!, received ${bet} chips`);
+				totalEarn += bet;
+			} else if (isRoundWinner(dealerCards, playerCards)) {
+				totalEarn -= bet;
+				console.log(`You loose!!!, lost ${bet} chips`);
+			} else {
+				console.log(`tie!`);
+			}
+			isGameStart = getContinue();
 		}
-		isGameStart = getContinue();
-		}
-    console.log(`You got total ${totalEarn} chips`);
+        if (!isRemainCardIsAbleToPlay){
+            throw new Error(`no card left, you got total ${totalEarn} chips`);
+        } else {
+            console.log(`You got total ${totalEarn} chips`);
+        }
 }
 
 function getBet() {
@@ -76,5 +82,13 @@ function isRoundWinner(cardOneList, cardTwoList) {
 function cardDisplayer(cardList){
     const actualCard = cardList.map(card => card.symbol + card.value)
     return actualCard;
+}
+
+function isPlayable(deckCards){
+    if(deckCards < 0 ){
+        return false
+    } else {
+        return true
+    }
 }
 
