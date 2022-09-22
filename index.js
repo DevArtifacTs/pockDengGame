@@ -2,6 +2,13 @@ const { Deck } = require("./deck.js");
 const { CARD_VALUE_MAP } = require("./CARD_VALUE_MAP.js");
 const prompt = require("prompt-sync")({ sigint: true });
 
+const multiLinePrompt = (ask) => {
+	const lines = ask.split(/\r?\n/);
+	const promptLine = lines.pop();
+	console.log(lines.join("\n"));
+	return prompt(promptLine);
+}; 
+
 let playerCards, dealerCards, bet
 let totalEarn = 0;
 let isGameStart = true;
@@ -41,7 +48,7 @@ function startGame(){
 }
 
 function getBet() {
-    const bet = Number(prompt("please input your bet"));
+    const bet = Number(multiLinePrompt("please input your bet \n"));
 	return bet;
 }
 
@@ -49,7 +56,7 @@ function getContinue(){
     let isContinue;
     let askingToContinue = true;
     while(askingToContinue){
-        const userPrompt = prompt("Wanna play more (Yes/No)?");
+        const userPrompt = multiLinePrompt("Wanna play more (Yes/No)? \n");
         if (userPrompt.toLowerCase() === "yes") {
             isContinue = true
             askingToContinue = false
